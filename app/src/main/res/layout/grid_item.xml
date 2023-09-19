@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="photo"
+            type="com.example.imagesearch.model.Photo" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="2dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:orientation="vertical"
+            android:layout_margin="6dp">
+
+            <ImageView
+                android:id="@+id/item_image"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                imageUrl="@{photo.previewURL}" />
+
+            <TextView
+                android:id="@+id/item_tags"
+                imageTags="@{photo.tags}"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:padding="2dp" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

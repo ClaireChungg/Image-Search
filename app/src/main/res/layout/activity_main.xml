@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="androidx.recyclerview.widget.GridLayoutManager" />
+
+        <import type="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <variable
+            name="viewModel"
+            type="com.example.imagesearch.PhotoViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.search.SearchBar
+                    android:id="@+id/search_bar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.searchText}"
+                    android:contentDescription="@string/search_bar" />
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+
+            <com.google.android.material.search.SearchView
+                android:id="@+id/search_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_anchor="@id/search_bar">
+                <!-- Search suggestions/results go here (ScrollView, RecyclerView, etc.). -->
+            </com.google.android.material.search.SearchView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                android:clipToPadding="false"
+                listData="@{viewModel.photos}"
+                app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+                app:layoutManager="LinearLayoutManager"
+                apiStatus="@{viewModel.status}" />
+
+            <ImageView
+                android:id="@+id/status_image"
+                apiStatus="@{viewModel.status}"
+                android:layout_width="wrap_content"
+                android:layout_height="80dp"
+                app:layout_anchor="@+id/search_view"
+                app:layout_anchorGravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/progress_circular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                app:layout_anchor="@+id/search_view"
+                app:layout_anchorGravity="center"
+                app:indicatorSize="80dp"
+                apiStatus="@{viewModel.status}" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/icon_toggle_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="16dp"
+                app:srcCompat="@drawable/baseline_grid_view_24" />
+
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
