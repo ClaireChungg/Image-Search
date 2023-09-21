@@ -3,18 +3,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingHorizontal="2dp"
     android:gravity="center_vertical">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:layout_margin="4dp"
         app:srcCompat="@drawable/baseline_history_24" />
 
     <TextView
         android:id="@+id/search_history_text"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="9"
+        android:layout_margin="4dp"
         android:text="apple" />
 </LinearLayout>

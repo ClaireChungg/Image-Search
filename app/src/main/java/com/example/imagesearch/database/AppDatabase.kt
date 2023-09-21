@@ -1,7 +1,6 @@
 package com.example.imagesearch.database
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -17,11 +16,6 @@ abstract class AppDatabase : RoomDatabase() {
         private var INSTANCE: AppDatabase? = null
 
         fun getDatabase(context: Context): AppDatabase {
-            if (INSTANCE != null) {
-                Log.d("AppDatabase", "getDatabase: INSTANCE is not null")
-            } else {
-                Log.d("AppDatabase", "getDatabase: INSTANCE is null")
-            }
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context,
