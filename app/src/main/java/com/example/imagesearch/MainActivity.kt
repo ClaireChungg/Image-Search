@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         lifecycle.coroutineScope.launch {
-            searchHistoryViewModel.getSearchHistories().collect {
+            searchHistoryViewModel.searchHistories.collect {
                 searchHistoryAdapter.submitList(it)
             }
         }

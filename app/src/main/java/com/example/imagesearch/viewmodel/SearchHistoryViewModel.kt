@@ -5,23 +5,24 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.imagesearch.database.AppDatabase
 import com.example.imagesearch.database.SearchHistory.SearchHistory
-import com.example.imagesearch.database.SearchHistory.SearchHistoryDao
+import com.example.imagesearch.database.SearchHistory.SearchHistoryRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class SearchHistoryViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val searchHistoryDao: SearchHistoryDao
-    fun getSearchHistories(): Flow<List<SearchHistory>> = searchHistoryDao.getAll()
-
+    private val repository: SearchHistoryRepository
+    val searchHistories: Flow<List<SearchHistory>>
 
     init {
-        searchHistoryDao = AppDatabase.getDatabase(application).searchHistoryDao()
+        repository =
+            SearchHistoryRepository(AppDatabase.getDatabase(application).searchHistoryDao())
+        searchHistories = repository.getAllData
     }
 
     fun insert(searchHistory: SearchHistory) {
-        viewModelScope.launch(Dispatchers.IO) { searchHistoryDao.addSearchHistory(searchHistory) }
+        viewModelScope.launch(Dispatchers.IO) { repository.insert(searchHistory) }
     }
 }
 
