@@ -1,8 +1,9 @@
-package com.example.imagesearch
+package com.example.imagesearch.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.imagesearch.model.Photo
 import com.example.imagesearch.network.PhotoApi
@@ -12,10 +13,8 @@ enum class LayoutType { LIST, GRID }
 enum class ApiStatus { INITIAL, LOADING, ERROR, DONE, EMPTY }
 
 class PhotoViewModel : ViewModel() {
-    // The internal MutableLiveData that stores the status of the most recent request
     private val _status = MutableLiveData<ApiStatus>()
 
-    // The external immutable LiveData for the request status
     val status: LiveData<ApiStatus> = _status
 
     private val _photos = MutableLiveData<List<Photo>>()
@@ -51,5 +50,15 @@ class PhotoViewModel : ViewModel() {
         } else {
             layoutType.setValue(LayoutType.GRID)
         }
+    }
+}
+
+class PhotoViewModelFactory : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(PhotoViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return PhotoViewModel() as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
