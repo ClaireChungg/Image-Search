@@ -2,26 +2,22 @@ package com.example.imagesearch.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.imagesearch.database.AppDatabase
 import com.example.imagesearch.database.SearchHistory.SearchHistory
 import com.example.imagesearch.database.SearchHistory.SearchHistoryDao
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class SearchHistoryViewModel(application: Application) : AndroidViewModel(application) {
 
     private val searchHistoryDao: SearchHistoryDao
-    private val _searchHistories = MutableLiveData<List<SearchHistory>>()
-    val searchHistories: LiveData<List<SearchHistory>> = _searchHistories
+    fun getSearchHistories(): Flow<List<SearchHistory>> = searchHistoryDao.getAll()
+
 
     init {
         searchHistoryDao = AppDatabase.getDatabase(application).searchHistoryDao()
-        searchHistoryDao.getAll().observeForever {
-            _searchHistories.value = it
-        }
     }
 
     fun insert(searchHistory: SearchHistory) {

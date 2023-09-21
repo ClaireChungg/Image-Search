@@ -1,9 +1,9 @@
 package com.example.imagesearch.database.SearchHistory
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SearchHistoryDao {
@@ -12,5 +12,5 @@ interface SearchHistoryDao {
     suspend fun addSearchHistory(searchHistory: SearchHistory)
 
     @Query("SELECT * FROM searchHistory ORDER BY id DESC")
-    fun getAll(): LiveData<List<SearchHistory>>
+    fun getAll(): Flow<List<SearchHistory>>
 }

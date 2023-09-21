@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.imagesearch.adapter.PhotoItemAdapter
@@ -13,6 +14,7 @@ import com.example.imagesearch.databinding.ActivityMainBinding
 import com.example.imagesearch.viewmodel.LayoutType
 import com.example.imagesearch.viewmodel.PhotoViewModel
 import com.example.imagesearch.viewmodel.SearchHistoryViewModel
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,9 +35,12 @@ class MainActivity : AppCompatActivity() {
         binding.viewModel = viewModel
         binding.recyclerView.adapter = PhotoItemAdapter()
         binding.searchHistoryViewModel = searchHistoryViewModel
-        binding.historyRecyclerView.adapter = SearchHistoryAdapter { searchHistory: SearchHistory ->
+
+        val searchHistoryAdapter = SearchHistoryAdapter { searchHistory: SearchHistory ->
             update(searchHistory.queryText)
         }
+
+        binding.historyRecyclerView.adapter = searchHistoryAdapter
         binding.lifecycleOwner = this
 
         binding.iconToggleButton.setOnClickListener {
@@ -55,8 +60,12 @@ class MainActivity : AppCompatActivity() {
             }
             false
         }
-//        TODO("clear search bar text on clear button click")
-//        TODO("cache when search twice")
+
+        lifecycle.coroutineScope.launch {
+            searchHistoryViewModel.getSearchHistories().collect {
+                searchHistoryAdapter.submitList(it)
+            }
+        }
     }
 
     private fun insertDataToDatabase() {
@@ -72,3 +81,6 @@ class MainActivity : AppCompatActivity() {
         binding.searchView.hide()
     }
 }
+
+//        TODO("clear search bar text on clear button click")
+//        TODO("cache when search twice")

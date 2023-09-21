@@ -39,7 +39,6 @@
                     android:layout_height="match_parent"
                     android:scrollbars="vertical"
                     android:clipToPadding="false"
-                    historiesData="@{searchHistoryViewModel.searchHistories}"
                     app:layoutManager="LinearLayoutManager"
                     app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior" />
             </com.google.android.material.search.SearchView>
