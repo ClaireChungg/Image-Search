@@ -5,12 +5,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-//import com.example.imagesearch.databinding.GridItemBinding
 import com.example.imagesearch.databinding.ListItemBinding
 import com.example.imagesearch.model.Photo
 
-class ItemAdapter : ListAdapter<Photo, ItemAdapter.ItemViewHolder>(DiffCallback) {
-    class ItemViewHolder(private var binding: ListItemBinding) :
+class PhotoItemAdapter : ListAdapter<Photo, PhotoItemAdapter.PhotoItemViewHolder>(DiffCallback) {
+    class PhotoItemViewHolder(private var binding: ListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(photo: Photo) {
             binding.photo = photo
@@ -18,13 +17,12 @@ class ItemAdapter : ListAdapter<Photo, ItemAdapter.ItemViewHolder>(DiffCallback)
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
-        return ItemViewHolder(ListItemBinding.inflate(LayoutInflater.from(parent.context)))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoItemViewHolder {
+        return PhotoItemViewHolder(ListItemBinding.inflate(LayoutInflater.from(parent.context)))
     }
 
-    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        val photo = getItem(position)
-        holder.bind(photo)
+    override fun onBindViewHolder(holder: PhotoItemViewHolder, position: Int) {
+        holder.bind(getItem(position))
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<Photo>() {

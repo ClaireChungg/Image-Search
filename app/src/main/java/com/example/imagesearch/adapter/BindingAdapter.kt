@@ -7,9 +7,10 @@ import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.example.imagesearch.ApiStatus
 import com.example.imagesearch.R
+import com.example.imagesearch.database.SearchHistory.SearchHistory
 import com.example.imagesearch.model.Photo
+import com.example.imagesearch.viewmodel.ApiStatus
 import com.google.android.material.progressindicator.CircularProgressIndicator
 
 @BindingAdapter("imageUrl")
@@ -32,7 +33,7 @@ fun bindRecyclerView(
     recyclerView: RecyclerView,
     data: List<Photo>?
 ) {
-    val adapter = recyclerView.adapter as ItemAdapter
+    val adapter = recyclerView.adapter as PhotoItemAdapter
     adapter.submitList(data)
 }
 
@@ -84,4 +85,13 @@ fun bindStatus(circularProgressIndicator: CircularProgressIndicator, status: Api
             circularProgressIndicator.visibility = View.GONE
         }
     }
+}
+
+@BindingAdapter("historiesData")
+fun bindSearchRecyclerView(
+    recyclerView: RecyclerView,
+    data: List<SearchHistory>?
+) {
+    val adapter = recyclerView.adapter as SearchHistoryAdapter
+    adapter.submitList(data)
 }
