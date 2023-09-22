@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             )
 
         binding.viewModel = photoViewModel
-        binding.recyclerView.adapter = PhotoItemAdapter()
+        binding.recyclerView.adapter = PhotoItemAdapter(binding.viewModel!!)
         binding.searchHistoryViewModel = searchHistoryViewModel
         binding.historyRecyclerView.adapter = SearchHistoryAdapter { searchHistory: SearchHistory ->
             update(searchHistory.queryText)
