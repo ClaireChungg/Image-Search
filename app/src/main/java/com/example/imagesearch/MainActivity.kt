@@ -3,12 +3,12 @@ package com.example.imagesearch
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.imagesearch.adapter.PhotoItemAdapter
 import com.example.imagesearch.adapter.SearchHistoryAdapter
-import com.example.imagesearch.database.AppDatabase
 import com.example.imagesearch.database.SearchHistory.SearchHistory
 import com.example.imagesearch.databinding.ActivityMainBinding
 import com.example.imagesearch.viewmodel.LayoutType
@@ -21,8 +21,15 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var photoViewModel: PhotoViewModel
-    private lateinit var searchHistoryViewModel: SearchHistoryViewModel
+    private val photoViewModel: PhotoViewModel by lazy {
+        PhotoViewModelFactory().create(PhotoViewModel::class.java)
+    }
+    private val searchHistoryViewModel: SearchHistoryViewModel by lazy {
+        ViewModelProvider(
+            this,
+            SearchHistoryViewModelFactory((application as ImageSearchApplication).database.searchHistoryDao())
+        )[SearchHistoryViewModel::class.java]
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,12 +37,6 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        photoViewModel = PhotoViewModelFactory().create(PhotoViewModel::class.java)
-        searchHistoryViewModel =
-            SearchHistoryViewModelFactory(AppDatabase.getDatabase(this).searchHistoryDao()).create(
-                SearchHistoryViewModel::class.java
-            )
 
         binding.viewModel = photoViewModel
         binding.recyclerView.adapter = PhotoItemAdapter(binding.viewModel!!)
