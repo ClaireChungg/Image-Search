@@ -30,6 +30,9 @@ class MainActivity : AppCompatActivity() {
             SearchHistoryViewModelFactory((application as ImageSearchApplication).database.searchHistoryDao())
         )[SearchHistoryViewModel::class.java]
     }
+    private val photoItemAdapter: PhotoItemAdapter by lazy {
+        PhotoItemAdapter()
+    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +42,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.viewModel = photoViewModel
-        binding.recyclerView.adapter = PhotoItemAdapter(binding.viewModel!!)
+        binding.recyclerView.adapter = photoItemAdapter
         binding.searchHistoryViewModel = searchHistoryViewModel
         binding.historyRecyclerView.adapter = SearchHistoryAdapter { searchHistory: SearchHistory ->
             update(searchHistory.queryText)
@@ -56,6 +59,7 @@ class MainActivity : AppCompatActivity() {
                 binding.recyclerView.layoutManager = GridLayoutManager(this, 2)
                 binding.iconToggleButton.setImageResource(R.drawable.baseline_view_list_24)
             }
+            photoItemAdapter.setViewType(photoViewModel.layoutType.value!!)
         }
 
         binding.searchView.editText.setOnEditorActionListener { textView, actionId, _ ->

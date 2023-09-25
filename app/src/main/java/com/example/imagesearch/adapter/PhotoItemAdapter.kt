@@ -9,12 +9,11 @@ import com.example.imagesearch.databinding.GridItemBinding
 import com.example.imagesearch.databinding.ListItemBinding
 import com.example.imagesearch.model.Photo
 import com.example.imagesearch.viewmodel.LayoutType
-import com.example.imagesearch.viewmodel.PhotoViewModel
 
-class PhotoItemAdapter(private val viewModel: PhotoViewModel) :
-    ListAdapter<Photo, RecyclerView.ViewHolder>(DiffCallback) {
+class PhotoItemAdapter : ListAdapter<Photo, RecyclerView.ViewHolder>(DiffCallback) {
     private val viewTypeList = 0
     private val viewTypeGrid = 1
+    private var viewType = LayoutType.LIST
 
     class ListItemViewHolder(private var binding: ListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -32,8 +31,12 @@ class PhotoItemAdapter(private val viewModel: PhotoViewModel) :
         }
     }
 
+    fun setViewType(viewType: LayoutType) {
+        this.viewType = viewType
+    }
+
     override fun getItemViewType(position: Int): Int {
-        return if (viewModel.layoutType.value == LayoutType.GRID) viewTypeGrid else viewTypeList
+        return if (viewType == LayoutType.GRID) viewTypeGrid else viewTypeList
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
