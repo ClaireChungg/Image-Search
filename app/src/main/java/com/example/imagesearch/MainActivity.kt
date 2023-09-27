@@ -3,7 +3,6 @@ package com.example.imagesearch
 import android.os.Bundle
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,26 +11,25 @@ import com.example.imagesearch.adapter.SearchHistoryAdapter
 import com.example.imagesearch.database.SearchHistory.SearchHistory
 import com.example.imagesearch.databinding.ActivityMainBinding
 import com.example.imagesearch.viewmodel.LayoutType
-import com.example.imagesearch.viewmodel.PhotoViewModel
-import com.example.imagesearch.viewmodel.PhotoViewModelFactory
-import com.example.imagesearch.viewmodel.SearchHistoryViewModel
-import com.example.imagesearch.viewmodel.SearchHistoryViewModelFactory
+import com.example.imagesearch.viewmodel.SearchViewModel
+import com.example.imagesearch.viewmodel.SearchViewModelFactory
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private val photoViewModel: PhotoViewModel by lazy {
-        PhotoViewModelFactory().create(PhotoViewModel::class.java)
-    }
-    private val searchHistoryViewModel: SearchHistoryViewModel by lazy {
-        ViewModelProvider(
-            this,
-            SearchHistoryViewModelFactory((application as ImageSearchApplication).database.searchHistoryDao())
-        )[SearchHistoryViewModel::class.java]
+    private val searchViewModel: SearchViewModel by lazy {
+        SearchViewModelFactory((application as ImageSearchApplication).database.searchHistoryDao()).create(
+            SearchViewModel::class.java
+        )
     }
     private val photoItemAdapter: PhotoItemAdapter by lazy {
         PhotoItemAdapter()
+    }
+    private val searchHistoryAdapter: SearchHistoryAdapter by lazy {
+        SearchHistoryAdapter { searchHistory: SearchHistory ->
+            update(searchHistory.queryText)
+        }
     }
 
 
@@ -41,25 +39,24 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.viewModel = photoViewModel
+        //TODO(naming)
+        binding.viewModel = searchViewModel
         binding.recyclerView.adapter = photoItemAdapter
-        binding.searchHistoryViewModel = searchHistoryViewModel
-        binding.historyRecyclerView.adapter = SearchHistoryAdapter { searchHistory: SearchHistory ->
-            update(searchHistory.queryText)
-        }
+        binding.historyRecyclerView.adapter = searchHistoryAdapter
 
         binding.lifecycleOwner = this
 
         binding.iconToggleButton.setOnClickListener {
-            photoViewModel.toggleView()
-            if (photoViewModel.layoutType.value == LayoutType.LIST) {
+            searchViewModel.toggleView()
+            //TODO(move to viewmodel)
+            if (searchViewModel.layoutType.value == LayoutType.LIST) {
                 binding.recyclerView.layoutManager = LinearLayoutManager(this)
                 binding.iconToggleButton.setImageResource(R.drawable.baseline_grid_view_24)
             } else {
                 binding.recyclerView.layoutManager = GridLayoutManager(this, 2)
                 binding.iconToggleButton.setImageResource(R.drawable.baseline_view_list_24)
             }
-            photoItemAdapter.setViewType(photoViewModel.layoutType.value!!)
+            photoItemAdapter.setViewType(searchViewModel.layoutType.value!!)
         }
 
         binding.searchView.editText.setOnEditorActionListener { textView, actionId, _ ->
@@ -70,22 +67,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         lifecycle.coroutineScope.launch {
-            searchHistoryViewModel.searchHistories.collect {
-                (binding.historyRecyclerView.adapter as SearchHistoryAdapter).submitList(it)
+            searchViewModel.searchHistories.collect {
+                searchHistoryAdapter.submitList(it)
             }
         }
     }
 
     private fun insertDataToDatabase() {
-        val queryText = photoViewModel.searchText.value.toString()
+        val queryText = searchViewModel.searchText.value.toString()
         val searchHistory = SearchHistory(0, queryText)
-        searchHistoryViewModel.insert(searchHistory)
+        searchViewModel.insert(searchHistory)
     }
 
     private fun update(queryText: String) {
-        photoViewModel.searchText.value = queryText
+        // TODO(move to viewmodel)
+        searchViewModel.searchText.value = queryText
         insertDataToDatabase()
-        photoViewModel.getPhotoItems()
+        searchViewModel.getPhotoItems()
+        // TODO(bind var)
         binding.searchView.hide()
     }
 }

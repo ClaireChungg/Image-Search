@@ -11,11 +11,7 @@
 
         <variable
             name="viewModel"
-            type="com.example.imagesearch.viewmodel.PhotoViewModel" />
-
-        <variable
-            name="searchHistoryViewModel"
-            type="com.example.imagesearch.viewmodel.SearchHistoryViewModel" />
+            type="com.example.imagesearch.viewmodel.SearchViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,6 +48,7 @@
                     android:id="@+id/search_bar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:imeOptions="actionSearch"
                     android:text="@{viewModel.searchText}"
                     android:contentDescription="@string/search_bar" />
 

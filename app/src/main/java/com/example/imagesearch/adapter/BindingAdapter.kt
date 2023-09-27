@@ -44,7 +44,7 @@ fun bindStatus(recyclerView: RecyclerView, status: ApiStatus) {
         }
 
         ApiStatus.INITIAL, ApiStatus.ERROR, ApiStatus.LOADING, ApiStatus.EMPTY -> {
-            recyclerView.visibility = View.GONE
+            recyclerView.visibility = View.INVISIBLE
         }
     }
 }
