@@ -28,7 +28,22 @@ class SearchViewModel(searchHistoryDao: SearchHistoryDao) : ViewModel() {
     private val repository: SearchHistoryRepository = SearchHistoryRepository(searchHistoryDao)
     val searchHistories: Flow<List<SearchHistory>> = repository.dataFlow
 
-    fun getPhotoItems() {
+    fun update(queryText: String) {
+        searchText.value = queryText
+        val searchHistory = SearchHistory(0, queryText)
+        insert(searchHistory)
+        getPhotoItems()
+    }
+
+    fun toggleView() {
+        if (layoutType.value === LayoutType.GRID) {
+            layoutType.setValue(LayoutType.LIST)
+        } else {
+            layoutType.setValue(LayoutType.GRID)
+        }
+    }
+
+    private fun getPhotoItems() {
         viewModelScope.launch {
             _status.value = ApiStatus.LOADING
             _photos.value = listOf()
@@ -47,15 +62,7 @@ class SearchViewModel(searchHistoryDao: SearchHistoryDao) : ViewModel() {
         }
     }
 
-    fun toggleView() {
-        if (layoutType.value === LayoutType.GRID) {
-            layoutType.setValue(LayoutType.LIST)
-        } else {
-            layoutType.setValue(LayoutType.GRID)
-        }
-    }
-
-    fun insert(searchHistory: SearchHistory) {
+    private fun insert(searchHistory: SearchHistory) {
         viewModelScope.launch(Dispatchers.IO) { repository.insert(searchHistory) }
     }
 }

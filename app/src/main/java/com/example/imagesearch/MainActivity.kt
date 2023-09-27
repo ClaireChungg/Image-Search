@@ -5,7 +5,6 @@ import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.coroutineScope
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.imagesearch.adapter.PhotoItemAdapter
 import com.example.imagesearch.adapter.SearchHistoryAdapter
 import com.example.imagesearch.database.SearchHistory.SearchHistory
@@ -28,7 +27,8 @@ class MainActivity : AppCompatActivity() {
     }
     private val searchHistoryAdapter: SearchHistoryAdapter by lazy {
         SearchHistoryAdapter { searchHistory: SearchHistory ->
-            update(searchHistory.queryText)
+            searchViewModel.update(searchHistory.queryText)
+            binding.searchView.hide()
         }
     }
 
@@ -39,8 +39,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //TODO(naming)
-        binding.viewModel = searchViewModel
+        binding.searchViewModel = searchViewModel
         binding.recyclerView.adapter = photoItemAdapter
         binding.historyRecyclerView.adapter = searchHistoryAdapter
 
@@ -50,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             searchViewModel.toggleView()
             //TODO(move to viewmodel)
             if (searchViewModel.layoutType.value == LayoutType.LIST) {
-                binding.recyclerView.layoutManager = LinearLayoutManager(this)
+                binding.recyclerView.layoutManager = GridLayoutManager(this, 1)
                 binding.iconToggleButton.setImageResource(R.drawable.baseline_grid_view_24)
             } else {
                 binding.recyclerView.layoutManager = GridLayoutManager(this, 2)
@@ -61,7 +60,8 @@ class MainActivity : AppCompatActivity() {
 
         binding.searchView.editText.setOnEditorActionListener { textView, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                update(textView.text.toString())
+                searchViewModel.update(textView.text.toString())
+                binding.searchView.hide()
             }
             false
         }
@@ -71,20 +71,5 @@ class MainActivity : AppCompatActivity() {
                 searchHistoryAdapter.submitList(it)
             }
         }
-    }
-
-    private fun insertDataToDatabase() {
-        val queryText = searchViewModel.searchText.value.toString()
-        val searchHistory = SearchHistory(0, queryText)
-        searchViewModel.insert(searchHistory)
-    }
-
-    private fun update(queryText: String) {
-        // TODO(move to viewmodel)
-        searchViewModel.searchText.value = queryText
-        insertDataToDatabase()
-        searchViewModel.getPhotoItems()
-        // TODO(bind var)
-        binding.searchView.hide()
     }
 }
