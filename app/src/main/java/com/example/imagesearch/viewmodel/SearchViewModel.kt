@@ -28,10 +28,9 @@ class SearchViewModel(searchHistoryDao: SearchHistoryDao) : ViewModel() {
     private val repository: SearchHistoryRepository = SearchHistoryRepository(searchHistoryDao)
     val searchHistories: Flow<List<SearchHistory>> = repository.dataFlow
 
-    fun update(queryText: String) {
+    fun performSearch(queryText: String) {
         searchText.value = queryText
-        val searchHistory = SearchHistory(0, queryText)
-        insert(searchHistory)
+        viewModelScope.launch(Dispatchers.IO) { repository.upsert(SearchHistory(0, queryText)) }
         getPhotoItems()
     }
 
@@ -60,10 +59,6 @@ class SearchViewModel(searchHistoryDao: SearchHistoryDao) : ViewModel() {
                 _photos.value = listOf()
             }
         }
-    }
-
-    private fun insert(searchHistory: SearchHistory) {
-        viewModelScope.launch(Dispatchers.IO) { repository.insert(searchHistory) }
     }
 }
 

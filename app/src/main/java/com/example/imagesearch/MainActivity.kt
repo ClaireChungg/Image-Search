@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     }
     private val searchHistoryAdapter: SearchHistoryAdapter by lazy {
         SearchHistoryAdapter { searchHistory: SearchHistory ->
-            searchViewModel.update(searchHistory.queryText)
+            searchViewModel.performSearch(searchHistory.queryText)
             binding.searchView.hide()
         }
     }
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.searchView.editText.setOnEditorActionListener { textView, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                searchViewModel.update(textView.text.toString())
+                searchViewModel.performSearch(textView.text.toString())
                 binding.searchView.hide()
             }
             false

@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.imagesearch.databinding.GridItemBinding
-import com.example.imagesearch.databinding.ListItemBinding
 import com.example.imagesearch.model.Photo
 import com.example.imagesearch.viewmodel.LayoutType
 
@@ -14,14 +13,6 @@ class PhotoItemAdapter : ListAdapter<Photo, RecyclerView.ViewHolder>(DiffCallbac
     private val viewTypeList = 0
     private val viewTypeGrid = 1
     private var viewType = LayoutType.LIST
-
-    class ListItemViewHolder(private var binding: ListItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-        fun bind(photo: Photo) {
-            binding.photo = photo
-            binding.executePendingBindings()
-        }
-    }
 
     class GridItemViewHolder(private var binding: GridItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -40,17 +31,11 @@ class PhotoItemAdapter : ListAdapter<Photo, RecyclerView.ViewHolder>(DiffCallbac
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return if (viewType == viewTypeList) {
-            ListItemViewHolder(ListItemBinding.inflate(LayoutInflater.from(parent.context)))
-        } else {
-            GridItemViewHolder(GridItemBinding.inflate(LayoutInflater.from(parent.context)))
-        }
+        return GridItemViewHolder(GridItemBinding.inflate(LayoutInflater.from(parent.context)))
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = getItem(position)
-        if (getItemViewType(position) == viewTypeList) (holder as ListItemViewHolder).bind(item)
-        else (holder as GridItemViewHolder).bind(item)
+        (holder as GridItemViewHolder).bind(getItem(position))
     }
 
     companion object DiffCallback : DiffUtil.ItemCallback<Photo>() {
