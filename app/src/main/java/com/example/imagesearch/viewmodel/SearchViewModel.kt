@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.example.imagesearch.R
 import com.example.imagesearch.database.SearchHistory.SearchHistory
 import com.example.imagesearch.database.SearchHistory.SearchHistoryDao
 import com.example.imagesearch.database.SearchHistory.SearchHistoryRepository
@@ -14,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-enum class LayoutType { LIST, GRID }
 enum class ApiStatus { INITIAL, LOADING, ERROR, DONE, EMPTY }
 
 class SearchViewModel(searchHistoryDao: SearchHistoryDao) : ViewModel() {
@@ -22,8 +22,11 @@ class SearchViewModel(searchHistoryDao: SearchHistoryDao) : ViewModel() {
     val status: LiveData<ApiStatus> = _status
     private val _photos = MutableLiveData<List<Photo>>()
     val photos: LiveData<List<Photo>> = _photos
+    private val _spanCount = MutableLiveData(1)
+    val spanCount = _spanCount
+    private val _toggleButtonIcon = MutableLiveData(R.drawable.baseline_grid_view_24)
+    val toggleButtonIcon = _toggleButtonIcon
     val searchText = MutableLiveData("")
-    val layoutType = MutableLiveData(LayoutType.LIST)
 
     private val repository: SearchHistoryRepository = SearchHistoryRepository(searchHistoryDao)
     val searchHistories: Flow<List<SearchHistory>> = repository.dataFlow
@@ -35,10 +38,12 @@ class SearchViewModel(searchHistoryDao: SearchHistoryDao) : ViewModel() {
     }
 
     fun toggleView() {
-        if (layoutType.value === LayoutType.GRID) {
-            layoutType.setValue(LayoutType.LIST)
+        if (_spanCount.value == 2) {
+            _spanCount.value = 1
+            _toggleButtonIcon.setValue(R.drawable.baseline_grid_view_24)
         } else {
-            layoutType.setValue(LayoutType.GRID)
+            _spanCount.value = 2
+            _toggleButtonIcon.setValue(R.drawable.baseline_view_list_24)
         }
     }
 

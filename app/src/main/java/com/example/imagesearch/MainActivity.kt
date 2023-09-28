@@ -9,7 +9,6 @@ import com.example.imagesearch.adapter.PhotoItemAdapter
 import com.example.imagesearch.adapter.SearchHistoryAdapter
 import com.example.imagesearch.database.SearchHistory.SearchHistory
 import com.example.imagesearch.databinding.ActivityMainBinding
-import com.example.imagesearch.viewmodel.LayoutType
 import com.example.imagesearch.viewmodel.SearchViewModel
 import com.example.imagesearch.viewmodel.SearchViewModelFactory
 import kotlinx.coroutines.launch
@@ -47,15 +46,9 @@ class MainActivity : AppCompatActivity() {
 
         binding.iconToggleButton.setOnClickListener {
             searchViewModel.toggleView()
-            //TODO(move to viewmodel)
-            if (searchViewModel.layoutType.value == LayoutType.LIST) {
-                binding.recyclerView.layoutManager = GridLayoutManager(this, 1)
-                binding.iconToggleButton.setImageResource(R.drawable.baseline_grid_view_24)
-            } else {
-                binding.recyclerView.layoutManager = GridLayoutManager(this, 2)
-                binding.iconToggleButton.setImageResource(R.drawable.baseline_view_list_24)
-            }
-            photoItemAdapter.setViewType(searchViewModel.layoutType.value!!)
+            binding.recyclerView.layoutManager =
+                GridLayoutManager(this, searchViewModel.spanCount.value!!)
+            binding.iconToggleButton.setImageResource(searchViewModel.toggleButtonIcon.value!!)
         }
 
         binding.searchView.editText.setOnEditorActionListener { textView, actionId, _ ->

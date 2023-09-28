@@ -62,7 +62,8 @@
                 android:clipToPadding="false"
                 listData="@{searchViewModel.photos}"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-                app:layoutManager="LinearLayoutManager"
+                app:layoutManager="GridLayoutManager"
+                app:spanCount="1"
                 apiStatus="@{searchViewModel.status}" />
 
             <ImageView
