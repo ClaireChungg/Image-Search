@@ -1,16 +1,19 @@
 package com.example.imagesearch.database.SearchHistory
 
 import androidx.room.Dao
-import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Upsert
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SearchHistoryDao {
 
-    @Insert
-    suspend fun addSearchHistory(searchHistory: SearchHistory)
+    @Upsert
+    suspend fun upsertSearchHistory(searchHistory: SearchHistory)
 
-    @Query("SELECT * FROM searchHistory ORDER BY id DESC")
+    @Query("SELECT * FROM searchHistory ORDER BY update_time DESC")
     fun getAll(): Flow<List<SearchHistory>>
+
+    @Query("SELECT id FROM searchHistory WHERE query_text = :queryText")
+    fun getIdByQueryText(queryText: String): Int?
 }

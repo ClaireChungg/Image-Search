@@ -10,12 +10,8 @@
         <import type="androidx.recyclerview.widget.LinearLayoutManager" />
 
         <variable
-            name="viewModel"
-            type="com.example.imagesearch.viewmodel.PhotoViewModel" />
-
-        <variable
-            name="searchHistoryViewModel"
-            type="com.example.imagesearch.viewmodel.SearchHistoryViewModel" />
+            name="searchViewModel"
+            type="com.example.imagesearch.viewmodel.SearchViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,7 +48,8 @@
                     android:id="@+id/search_bar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.searchText}"
+                    android:imeOptions="actionSearch"
+                    android:text="@{searchViewModel.searchText}"
                     android:contentDescription="@string/search_bar" />
 
             </com.google.android.material.appbar.AppBarLayout>
@@ -63,14 +60,15 @@
                 android:layout_height="match_parent"
                 android:scrollbars="vertical"
                 android:clipToPadding="false"
-                listData="@{viewModel.photos}"
+                listData="@{searchViewModel.photos}"
                 app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-                app:layoutManager="LinearLayoutManager"
-                apiStatus="@{viewModel.status}" />
+                app:layoutManager="GridLayoutManager"
+                app:spanCount="1"
+                apiStatus="@{searchViewModel.status}" />
 
             <ImageView
                 android:id="@+id/status_image"
-                apiStatus="@{viewModel.status}"
+                apiStatus="@{searchViewModel.status}"
                 android:layout_width="wrap_content"
                 android:layout_height="80dp"
                 app:layout_anchor="@+id/search_view"
@@ -88,7 +86,7 @@
                 app:layout_anchor="@+id/search_view"
                 app:layout_anchorGravity="center"
                 app:indicatorSize="80dp"
-                apiStatus="@{viewModel.status}" />
+                apiStatus="@{searchViewModel.status}" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/icon_toggle_button"
